@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+    <meta charset="UTF-8">
+    <title>Seasons Gifs</title>
+    <link rel="stylesheet" type="text/css" href="giphy.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+
+    </head>
+
+
+    <body>
+    
+        <div class="container">
+
+            <h1>Click the buttons below to see beautiful gifs of the four seasons! Add your own buttons to create, rain, snow, or any other type of weather to your page to please your eye.</h1>
+
+            <div id="weather-types"></div>
+
+        <div id="SeasonsGifs"></div>
+
+        <!--Buttons for the seasons-->
+        <label for="weather-input"></label>
+        <button type="button" class="btn btn-success">Spring</button>
+        <button type="button" class="btn btn-warning">Summer</button>
+        <button type="button" class="btn btn-danger">Autumn</button>
+        <button type="button" class="btn btn-primary">Winter</button>
+
+        <!--Button to add more gifs-->
+        <input id="add-weather" type="submit" value="Add Some Spice to the Seasons!">
+
+        <!--Search bar-->
+        <div class="searchBar">
+            <input type="text" placeholder="Search..."> 
+        </div>
+
+        <script type="text/javascript">
+
+        //Linking to Giphy
+        var xhr = $.get("http://api.giphy.com/v1/gifs/search?q=ryan+gosling&api_key=zHpoP3UjKADWig6AQNp1rtgJ6UHpcwBS");
+        xhr.done(function(data) { console.log("success got data", data); });
+
+        //Array of seasons
+        var seasons = ["Spring", "Summer", "Autumn", "Winter"];
+
+        //Clearing the weather buttons before adding more
+        $("#weather-types").empty();
+
+        //Looping through the different seasons
+        for (var i = 0; i < seasons.length; i++) {
+        
+        //Adding buttons
+            var s = $("<button>");
+            s.addClass("weather");
+            s.attr("data-name", weather[i]);
+            s.text(weather [i]);
+            $("#weather-types").append(s);
+        }
+
+        $("#add-weather").on("click", function(event) {
+            event.preventDefault();
+            var seasons = $("#weather-input").val().trim();
+            seasons.push(season);
+        }
+        
+        </script>
+
+    </body>
+</html>
