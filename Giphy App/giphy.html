@@ -3,69 +3,108 @@
     <head>
 
     <meta charset="UTF-8">
+
     <title>Seasons Gifs</title>
+
     <link rel="stylesheet" type="text/css" href="giphy.css">
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+ 
+
 
     </head>
 
 
     <body>
     
-        <div class="container">
-
-            <h1>Click the buttons below to see beautiful gifs of the four seasons! Add your own buttons to create, rain, snow, or any other type of weather to your page to please your eye.</h1>
-
-            <div id="weather-types"></div>
-
-        <div id="SeasonsGifs"></div>
-
-        <!--Buttons for the seasons-->
-        <label for="weather-input"></label>
-        <button type="button" class="btn btn-success">Spring</button>
-        <button type="button" class="btn btn-warning">Summer</button>
-        <button type="button" class="btn btn-danger">Autumn</button>
-        <button type="button" class="btn btn-primary">Winter</button>
-
-        <!--Button to add more gifs-->
-        <input id="add-weather" type="submit" value="Add Some Spice to the Seasons!">
-
-        <!--Search bar-->
-        <div class="searchBar">
-            <input type="text" placeholder="Search..."> 
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <h1 class="display-4">Seasons Fever!</h1>
+                <h2>Click the buttons below to see beautiful gifs of the four seasons! Add your own buttons to create, rain, snow, or any other type of weather to your page to please your eye.</h2>
+            </div>
         </div>
 
-        <script type="text/javascript">
+        <!--Buttons for the seasons-->
+        <div id="seasons-buttons">
+            <button type="button" class="clickListener" data-season="spring">Spring</button>
+            <button type="button" class="clickListener" data-season="summer">Summer</button>
+            <button type="button" class="clickListener" data-season="autumn">Autumn</button>
+            <button type="button" class="clickListener" data-season="winter">Winter</button>
+        </div>
 
-        //Linking to Giphy
-        var xhr = $.get("http://api.giphy.com/v1/gifs/search?q=ryan+gosling&api_key=zHpoP3UjKADWig6AQNp1rtgJ6UHpcwBS");
-        xhr.done(function(data) { console.log("success got data", data); });
+        <!--Div for gifs to apeear-->
+        <div id="gifs-are-here"></div>
+    
+
+        <!--Button to add more gifs-->
+        <form id="weather-form">
+            <label for="weather-input"></label>
+            <input type="text" id="weather-input">
+            <input id="add-Weather" type="submit" value="Add Some Spice to the Seasons" name="button"></input>
+        </form>
+
+        <div id="weather"></div>
+
+
+        <script type="text/javascript">
 
         //Array of seasons
         var seasons = ["Spring", "Summer", "Autumn", "Winter"];
 
-        //Clearing the weather buttons before adding more
-        $("#weather-types").empty();
+        //Adding weather types
+        $(document).ready(function() {
+            $("#add-Weather").on("click", function() {
+                event.preventDefault();
+                var weatherSearch = $("#weather-input").val();
+                console.log("hello");
+                var moreWeather = $("<button>" + weatherSearch + "</button>");
+                moreWeather.addClass("clickListener");
+                moreWeather.attr("data-weather", weatherSearch);
+                $("#seasons-buttons").append(moreWeather);
+             });
+        });
 
-        //Looping through the different seasons
-        for (var i = 0; i < seasons.length; i++) {
-        
-        //Adding buttons
-            var s = $("<button>");
-            s.addClass("weather");
-            s.attr("data-name", weather[i]);
-            s.text(weather [i]);
-            $("#weather-types").append(s);
-        }
+        //Displaying gifs
+        $(document).on("click", ".clickListener", function() {
+            var weather= $(this).attr("data-season");               
+            var queryURL= "https://api.giphy.com/v1/gifs/search?q=" + seasons + "&api_key=zHpoP3UjKADWig6AQNp1rtgJ6UHpcwBS&limit=10";
 
-        $("#add-weather").on("click", function(event) {
-            event.preventDefault();
-            var seasons = $("#weather-input").val().trim();
-            seasons.push(season);
-        }
+            $.ajax({
+                url:queryURL,
+                method:"GET"
+            })
+
+            .then(function(response) {
+                console.log(queryURL);
+                console.log(response);
+                var gifs = response.data;
+
+                for (var i = 0; i < gifs.length; i++) {
+                    var weatherDiv = $("<div>");
+                    var p = $("<p>").text("Rating" + gifs[i].rating);
+                    var weatherImage = $("<img>");
+                    weatherImage.attr("src", gifs[i].images.fixed_height.url);
+                    weatherDiv.append(p);
+                    weatherDiv.append(weatherImage);
+
+                    $("#gifs-are-here").prepend(weatherDiv);
+
+                    var displayStillImageUrl = response.data[i].images.fixed_height_still.url;
+                    var displayGifImageUrl = response.data[i].images.fixed_height.url;
+                    var image = $("<img>");
+                    image.attr({"src": displayStillImageUrl, "gif": displayGifImageUrl, "still": displayStillImageUrl});
+                    image.addClass("still");
+                    image.addClass("weatherImageClass");                   
+                    
+                     }
+                });
+
+             });
         
         </script>
 
     </body>
+
 </html>
